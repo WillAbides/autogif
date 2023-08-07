@@ -3,7 +3,7 @@
 ## Install With [bindown](https://github.com/WillAbides/bindown)
 
 ## Demo
-[![demo](doc/images/demo.gif)](https://asciinema.org/a/424278)
+![demo](doc/images/demo.gif)
 
 ```shell
 bindown template-source add autogif https://github.com/WillAbides/autogif/releases/latest/download/bindown.yaml
