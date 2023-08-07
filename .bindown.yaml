@@ -4,6 +4,10 @@ systems:
   - linux/amd64
   - windows/amd64
 dependencies:
+  ffmpeg:
+    template: ffmpeg
+    vars:
+      version: b6.0
   gh:
     template: origin#gh
     vars:
@@ -44,7 +48,42 @@ dependencies:
     template: origin#shfmt
     vars:
       version: 3.6.0
+  vhs:
+    template: vhs
+    vars:
+      version: 0.6.0
 templates:
+  ffmpeg:
+    homepage: https://github.com/eugeneware/ffmpeg-static
+    description: ffmpeg static binaries for Mac OSX and Linux and Windows
+    url: https://github.com/eugeneware/ffmpeg-static/releases/download/{{.version}}/ffmpeg-{{.os}}-{{.arch}}{{.urlSuffix}}
+    archive_path: ffmpeg-{{.os}}-{{.arch}}{{.archivePathSuffix}}
+    bin: ffmpeg
+    vars:
+      archivePathSuffix: ""
+      urlSuffix: .gz
+    overrides:
+      - matcher:
+          os:
+            - windows
+        dependency:
+          url: https://github.com/eugeneware/ffmpeg-static/releases/download/{{.version}}/ffmpeg-{{.os}}32-{{.arch}}{{.urlSuffix}}
+          archive_path: ffmpeg-{{.os}}32-{{.arch}}{{.archivePathSuffix}}
+          substitutions:
+            arch:
+              amd64: x64
+            os:
+              windows: win
+    substitutions:
+      arch:
+        amd64: x64
+    systems:
+      - darwin/amd64
+      - darwin/arm64
+      - linux/amd64
+      - windows/amd64
+    required_vars:
+      - version
   origin#gh:
     homepage: https://github.com/cli/cli
     description: GitHub’s official command line tool
@@ -361,6 +400,41 @@ templates:
       - windows/amd64
     required_vars:
       - version
+  vhs:
+    homepage: https://github.com/charmbracelet/vhs
+    description: "Your CLI home video recorder \U0001F4FC"
+    url: https://github.com/charmbracelet/vhs/releases/download/v{{.version}}/vhs_{{.version}}_{{.os}}_{{.arch}}{{.urlSuffix}}
+    archive_path: vhs{{.archivePathSuffix}}
+    bin: vhs
+    vars:
+      archivePathSuffix: ""
+      urlSuffix: .tar.gz
+    overrides:
+      - matcher:
+          os:
+            - windows
+        dependency:
+          vars:
+            archivePathSuffix: .exe
+            urlSuffix: .zip
+          substitutions:
+            arch:
+              amd64: x86_64
+            os:
+              windows: Windows
+    substitutions:
+      arch:
+        amd64: x86_64
+      os:
+        darwin: Darwin
+        linux: Linux
+    systems:
+      - darwin/amd64
+      - darwin/arm64
+      - linux/amd64
+      - windows/amd64
+    required_vars:
+      - version
 template_sources:
   origin: https://raw.githubusercontent.com/WillAbides/bindown-templates/master/bindown.yml
 url_checksums:
@@ -376,10 +450,18 @@ url_checksums:
   https://github.com/WillAbides/semver-prev/releases/download/v0.0.1/semver-prev_0.0.1_darwin_arm64.tar.gz: 367eaccc368bec6119d47cc78d0ad743cc8709dc1900e8f170c5314418c3a14e
   https://github.com/WillAbides/semver-prev/releases/download/v0.0.1/semver-prev_0.0.1_linux_amd64.tar.gz: 1c1ab5926e9548659bdc1786cf1da9f62f80ae5314c5ccdf71123767e4f4da1d
   https://github.com/WillAbides/semver-prev/releases/download/v0.0.1/semver-prev_0.0.1_windows_amd64.tar.gz: 31bc3527ad74cdfda9d5868287141f44e72e8fbd1709c4f6af05205f9eb8bb8b
+  https://github.com/charmbracelet/vhs/releases/download/v0.6.0/vhs_0.6.0_Darwin_arm64.tar.gz: 6882c0a86798c80f90fb54f343aa565cd0d7c1d40f1b822e1deb1f38d527849a
+  https://github.com/charmbracelet/vhs/releases/download/v0.6.0/vhs_0.6.0_Darwin_x86_64.tar.gz: 186949e88b3406a428c1bbf4106563bbf34e13c0afdbb475a49b987a7657a118
+  https://github.com/charmbracelet/vhs/releases/download/v0.6.0/vhs_0.6.0_Linux_x86_64.tar.gz: 54234c73ba27ca8305cc4573be18ab636b565b883d19521d05434b011aeb0adc
+  https://github.com/charmbracelet/vhs/releases/download/v0.6.0/vhs_0.6.0_Windows_x86_64.zip: ad8912327a059c048dbfb219c16fbc4b66152102d81f717cd2a62173eef06931
   https://github.com/cli/cli/releases/download/v2.29.0/gh_2.29.0_linux_amd64.tar.gz: 9fe05f43a11a7bf8eacf731422452d1997e6708d4160ef0efcb13c103320390e
   https://github.com/cli/cli/releases/download/v2.29.0/gh_2.29.0_macOS_amd64.zip: e116d0f9c310450482cdcd7f4d2d1c7c4cab8d4f025a340260ce3f15329c5145
   https://github.com/cli/cli/releases/download/v2.29.0/gh_2.29.0_macOS_arm64.zip: 38ca9a355376abd1475362cf8b3cacf2a757198fe5fe70349cb1767666abacc6
   https://github.com/cli/cli/releases/download/v2.29.0/gh_2.29.0_windows_amd64.zip: 031eb343ebff6f8cc712d58d79267ee00b0c61b37d6698927161daae895044c6
+  https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-darwin-arm64.gz: 6be74d6f449889c2e87a75873894f8520cad56c08ac76f2a628d85b0519daaca
+  https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-darwin-x64.gz: a12354fce7eb62361473bbe10d53a1893695babd35869ec8e92e5dfea8d0440b
+  https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-x64.gz: 17c1ae10b52ac499180679fe6ba77e17642390c4eedb0f1e3b0ac045da55128f
+  https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-win32-x64.gz: 450d66226c79405c724e821f291cab0911e934bfa9fa2231adcab587f3e07b50
   https://github.com/golangci/golangci-lint/releases/download/v1.51.2/golangci-lint-1.51.2-darwin-amd64.tar.gz: 0549cbaa2df451cf3a2011a9d73a9cb127784d26749d9cd14c9f4818af104d44
   https://github.com/golangci/golangci-lint/releases/download/v1.51.2/golangci-lint-1.51.2-darwin-arm64.tar.gz: 36e69882205a0e42a63ad57ec3015639c11051e03f0beb9cf7949c6451408960
   https://github.com/golangci/golangci-lint/releases/download/v1.51.2/golangci-lint-1.51.2-linux-amd64.tar.gz: 4de479eb9d9bc29da51aec1834e7c255b333723d38dbd56781c68e5dddc6a90b

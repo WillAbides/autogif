@@ -1,0 +1,10 @@
+#!/bin/sh
+#/ script/release-hook is run by release-train as pre-tag-hook
+
+set -e
+
+CDPATH="" cd -- "$(dirname -- "$0")/.."
+
+script/bindown -q install ffmpeg vhs
+export PATH="$PWD/bin:$PATH"
+PROMPT_COMMAND=" " PS1=" $ " /bin/bash -c "vhs vhs/demo.tape"
